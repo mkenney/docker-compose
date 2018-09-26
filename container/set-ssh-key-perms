@@ -1,0 +1,24 @@
+#!/bin/sh
+# Required for volume mounting ssh keys for "Docker for Windows"
+# credit to: https://nickjanetakis.com/blog/docker-tip-56-volume-mounting-ssh-keys-into-a-docker-container
+# Usage: volume mount your ssh key directory to /tmp/.ssh
+
+set -e
+
+if [ -d /tmp/.ssh ]; then
+    cp -R /tmp/.ssh /root/.ssh
+    cp -R /tmp/.ssh /home/dev/.ssh
+    chmod 700 /root/.ssh
+    chmod 700 /home/dev/.ssh
+
+    if [ -f /tmp/.ssh/id_rsa.pub ]; then
+        chmod 644 /root/.ssh/id_rsa.pub
+        chmod 644 /home/dev/.ssh/id_rsa.pub
+    fi
+    if [ -f /tmp/.ssh/id_rsa ]; then
+        chmod 600 /root/.ssh/id_rsa
+        chmod 600 /home/dev/.ssh/id_rsa
+    fi
+fi
+
+exec "$@"
